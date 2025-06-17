@@ -1,11 +1,13 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./routes/Home";
+import AI from "./routes/AI";
 
 const App = () => {
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="bg-gray-900 text-white">
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/ai" element={<AI />} />
       </Routes>
     </div>
   );

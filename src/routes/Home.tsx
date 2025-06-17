@@ -1,86 +1,18 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-import WeatherCard from "../components/WeatherCard";
-import type { WeatherData } from "../components/WeatherCard";
-import { getMockWeatherData } from "../services/mockWeatherService";
-
-const API_KEY = import.meta.env.VITE_WEATHERSTACK_API_KEY;
+import { Link } from "react-router-dom";
+import Weather from "../components/Weather";
 
 const Home = () => {
-  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
-  const weatherDataRef = useRef(weatherData);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [locationQuery, setLocationQuery] = useState<string>("fetch:ip");
-
-  useEffect(() => {
-    weatherDataRef.current = weatherData;
-  }, [weatherData]);
-
-  const fetchWeatherData = useCallback(async (query: string) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      if (!API_KEY) {
-        setWeatherData(getMockWeatherData() as WeatherData);
-      } else {
-        const apiUrl = `http://api.weatherstack.com/current?access_key=${API_KEY}&query=${query}`;
-        const response = await fetch(apiUrl);
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data: WeatherData = await response.json();
-
-        if (data.error) {
-          throw new Error(data.error.info);
-        }
-        setWeatherData(data);
-      }
-    } catch (err) {
-      console.error("Error fetching weather data:", err);
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("An unknown error occurred");
-      }
-      if (weatherDataRef.current === null) {
-        setWeatherData(getMockWeatherData() as WeatherData);
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchWeatherData(locationQuery);
-  }, [fetchWeatherData, locationQuery]);
-
-  const handleSearch = useCallback(
-    (newQuery: string) => {
-      setLocationQuery(newQuery);
-      fetchWeatherData(newQuery);
-    },
-    [fetchWeatherData]
-  );
-
   return (
-    <div className="flex flex-col items-center justify-center">
-      {error && (
-        <p className="text-red-400 text-lg font-semibold mb-4">{error}</p>
-      )}
-      {weatherData ? (
-        <div className="relative">
-          <WeatherCard
-            weatherData={weatherData}
-            onRefresh={() => fetchWeatherData(locationQuery)}
-            isLoading={isLoading}
-            onSearch={handleSearch}
-          />
-        </div>
-      ) : (
-        !error && <p>Loading...</p>
-      )}
+    <div className="min-h-screen flex flex-col items-center justify-center relative">
+      <Link
+        to="/ai"
+        className="absolute top-4 left-4 p-1 rounded-md bg-gray-700 hover:bg-gray-600 focus:outline-none text-white text-sm font-bold min-w-[3rem] flex items-center justify-center"
+      >
+        AI
+      </Link>
+      <div className="flex flex-col items-center justify-center">
+        <Weather />
+      </div>
     </div>
   );
 };
