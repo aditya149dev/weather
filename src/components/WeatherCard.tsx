@@ -196,8 +196,8 @@ const WeatherCard = ({
         />
         <WeatherDetailBox
           iconSrc={maskIcon}
-          text={`${weatherData.current.air_quality["us-epa-index"]} AQI Code`}
-          label="Air Quality"
+          text={`${weatherData.current.air_quality["us-epa-index"]}`}
+          label="Air Quality: us-epa-index"
           param="us-epa-index"
           value={parseInt(weatherData.current.air_quality["us-epa-index"])}
         />
