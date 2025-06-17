@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import WeatherCard from "./components/WeatherCard";
 import type { WeatherData } from "./components/WeatherCard";
+import { getMockWeatherData } from "./mockService";
 
 const API_KEY = import.meta.env.VITE_WEATHERSTACK_API_KEY;
 
@@ -15,18 +16,23 @@ const App = () => {
     setError(null);
 
     try {
-      const apiUrl = `http://api.weatherstack.com/current?access_key=${API_KEY}&query=${query}`;
-      const response = await fetch(apiUrl);
+      if (!API_KEY) {
+        const data: WeatherData = getMockWeatherData();
+        setWeatherData(data);
+      } else {
+        const apiUrl = `http://api.weatherstack.com/current?access_key=${API_KEY}&query=${query}`;
+        const response = await fetch(apiUrl);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data: WeatherData = await response.json();
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data: WeatherData = await response.json();
 
-      if (data.error) {
-        throw new Error(data.error.info);
+        if (data.error) {
+          throw new Error(data.error.info);
+        }
+        setWeatherData(data);
       }
-      setWeatherData(data);
     } catch (err) {
       console.error("Error fetching weather data:", err);
       if (err instanceof Error) {
