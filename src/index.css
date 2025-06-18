@@ -22,29 +22,6 @@
   }
 }
 
-.animate-spin-slow {
-  animation: spin 1s linear infinite;
-}
-
-.button-pop {
-  animation: button-pop 0.2s ease-in-out;
-}
-
-.filter-yellow {
-  filter: invert(74%) sepia(87%) saturate(302%) hue-rotate(359deg)
-    brightness(103%) contrast(100%);
-}
-
-.filter-red {
-  filter: invert(30%) sepia(90%) saturate(1478%) hue-rotate(338deg)
-    brightness(97%) contrast(93%);
-}
-
-.filter-white {
-  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%)
-    contrast(100%);
-}
-
 .scrollbar-hide::-webkit-scrollbar {
   width: 8px;
   height: 8px;

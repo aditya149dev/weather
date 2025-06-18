@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { getWeatherStatus, type StatusColor } from "../utilities/weatherStatus";
 
 interface WeatherDetailBoxProps {
@@ -10,14 +10,14 @@ interface WeatherDetailBoxProps {
   sizeClass?: string;
 }
 
-const WeatherDetailBox: React.FC<WeatherDetailBoxProps> = ({
+const WeatherDetailBox = ({
   iconSrc,
   text,
   label,
   param,
   value,
   sizeClass = "w-10 h-10",
-}) => {
+}: WeatherDetailBoxProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const statusColor: StatusColor = getWeatherStatus(param, value);
 
@@ -36,12 +36,12 @@ const WeatherDetailBox: React.FC<WeatherDetailBoxProps> = ({
   const getIconFilterClass = () => {
     switch (statusColor) {
       case "bad":
-        return "filter-yellow";
+        return "filter-[invert(74%)_sepia(87%)_saturate(302%)_hue-rotate(359deg)_brightness(103%)_contrast(100%)]";
       case "critical":
-        return "filter-red";
+        return "filter-[invert(30%)_sepia(90%)_saturate(1478%)_hue-rotate(338deg)_brightness(97%)_contrast(93%)]";
       case "normal":
       default:
-        return "filter-white";
+        return "filter-[invert(100%)_sepia(0%)_saturate(0%)_hue-rotate(0deg)_brightness(100%)_contrast(100%)]";
     }
   };
 

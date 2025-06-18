@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import sunIcon from "../assets/sun.svg";
 import moonIcon from "../assets/moon.svg";
 
-interface SunriseSunsetDisplayProps {
+interface SunriseSunsetProps {
   localtime: string;
   sunrise: string;
   sunset: string;
@@ -17,13 +17,13 @@ interface TimeDisplayProps {
   className?: string;
 }
 
-const TimeDisplay: React.FC<TimeDisplayProps> = ({
+const TimeDisplay = ({
   iconSrc,
   altText,
   tooltipText,
   time,
   className,
-}) => {
+}: TimeDisplayProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -43,12 +43,12 @@ const TimeDisplay: React.FC<TimeDisplayProps> = ({
   );
 };
 
-const SunriseSunsetDisplay: React.FC<SunriseSunsetDisplayProps> = ({
+const SunriseSunset = ({
   localtime,
   sunrise,
   sunset,
   className,
-}) => {
+}: SunriseSunsetProps) => {
   const localDate = new Date(localtime);
   const localDatePart = localtime.split(" ")[0];
 
@@ -81,4 +81,4 @@ const SunriseSunsetDisplay: React.FC<SunriseSunsetDisplayProps> = ({
   }
 };
 
-export default SunriseSunsetDisplay;
+export default SunriseSunset;

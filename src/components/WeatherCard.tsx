@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import SunriseSunsetDisplay from "./SunriseSunsetDisplay";
+import SunriseSunset from "./SunriseSunset";
 import WeatherDetailBox from "./WeatherDetailBox";
 import { convertUTCToLocal } from "../utilities/timeConverter";
 import { FormUI } from "./ui/FormUI";
@@ -123,7 +123,9 @@ const WeatherCard = ({
           <img
             src={refreshIcon}
             alt="Refresh"
-            className={`w-4 h-4 ${isLoading ? "animate-spin-slow" : ""}`}
+            className={`w-4 h-4 ${
+              isLoading ? "animate-[spin_1s_linear_infinite]" : ""
+            }`}
           />
         </button>
       </div>
@@ -181,7 +183,7 @@ const WeatherCard = ({
                 })
                 .toUpperCase()}
             </span>
-            <SunriseSunsetDisplay
+            <SunriseSunset
               localtime={weatherData.location.localtime}
               sunrise={weatherData.current.astro.sunrise}
               sunset={weatherData.current.astro.sunset}

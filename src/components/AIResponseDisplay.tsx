@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import CopyIcon from "../assets/copy.svg";
@@ -7,9 +7,7 @@ interface AIResponseDisplayProps {
   geminiResponse: string | null;
 }
 
-const AIResponseDisplay: React.FC<AIResponseDisplayProps> = ({
-  geminiResponse,
-}) => {
+const AIResponseDisplay = ({ geminiResponse }: AIResponseDisplayProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const responseRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +33,7 @@ const AIResponseDisplay: React.FC<AIResponseDisplayProps> = ({
             type="button"
             onClick={handleCopy}
             className={`bg-gray-700 rounded-md hover:bg-gray-600 w-7 h-7 flex items-center justify-center cursor-pointer ${
-              isAnimating ? "button-pop" : ""
+              isAnimating ? "animate-[button-pop_0.2s_ease-in-out]" : ""
             }`}
           >
             <img src={CopyIcon} alt="Copy" className="w-6 h-6" />
