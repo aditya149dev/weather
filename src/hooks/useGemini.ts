@@ -52,10 +52,36 @@ export const useGemini = () => {
     [performGeneration]
   );
 
+  const generateSummaryFromFile = useCallback(
+    (file: File) => {
+      const task = async (): Promise<Part[]> => {
+        const fileData = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () =>
+            resolve((reader.result as string).split(",")[1]);
+          reader.onerror = (error) => reject(error);
+        });
+        return [
+          { text: "Summarize this document" },
+          {
+            inlineData: {
+              mimeType: file.type,
+              data: fileData,
+            },
+          },
+        ];
+      };
+      return performGeneration(task);
+    },
+    [performGeneration]
+  );
+
   return {
     geminiResponse,
     isLoading,
     error,
     generateContent,
+    generateSummaryFromFile,
   };
 };

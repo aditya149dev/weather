@@ -1,0 +1,88 @@
+import React, { useState } from "react";
+import AIResponseDisplay from "./AIResponseDisplay";
+import UpArrowIcon from "../assets/upArrow.svg";
+
+interface AISummaryProps {
+  geminiResponse: string | null;
+  isLoading: boolean;
+  error: string | null;
+  onGenerateSummary: (file: File) => void;
+}
+
+const AISummary = ({
+  geminiResponse,
+  isLoading,
+  error,
+  onGenerateSummary,
+}: AISummaryProps) => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    } else {
+      setSelectedFile(null);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedFile) {
+      onGenerateSummary(selectedFile);
+    }
+  };
+
+  return (
+    <>
+      <div className="flex flex-col gap-2.5 overflow-y-auto pr-2 scrollbar-hide">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col w-full bg-gray-700 border border-gray-600 rounded-md p-2"
+        >
+          <label
+            htmlFor="file-upload"
+            className="flex flex-col items-center justify-center w-full p-4 rounded-lg cursor-pointer hover:bg-gray-800 bg-transparent border-2 border-dashed border-gray-500"
+          >
+            <div className="text-center">
+              <p className="text-sm text-gray-300">
+                {selectedFile ? selectedFile.name : "Select a PDF file"}
+              </p>
+              {!selectedFile && (
+                <p className="text-xs text-gray-500 mt-1">
+                  Click to choose a file
+                </p>
+              )}
+            </div>
+            <input
+              id="file-upload"
+              type="file"
+              accept=".pdf"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+          </label>
+          <button
+            type="submit"
+            className="w-full py-2 flex items-center justify-center bg-gray-300 rounded-md hover:bg-gray-200 cursor-pointer mt-2"
+            disabled={isLoading || !selectedFile}
+          >
+            <img
+              src={UpArrowIcon}
+              alt="Generate Summary"
+              className="w-4 h-4 filter invert(100%)"
+            />
+          </button>
+          {isLoading && <p className="text-gray-400 text-sm">Summarizing...</p>}
+        </form>
+
+        {error && <p className="text-red-500 text-sm">{error}</p>}
+
+        {geminiResponse && (
+          <AIResponseDisplay geminiResponse={geminiResponse} />
+        )}
+      </div>
+    </>
+  );
+};
+
+export default AISummary;

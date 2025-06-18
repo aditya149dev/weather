@@ -22,7 +22,7 @@ const PopoverUI = ({ children, triggerText }: PopoverUIProps) => {
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content
-          className="w-[calc(100vw-2rem)] max-w-2xl rounded bg-gray-800 pt-8 px-4 pb-4 shadow-lg will-change-[transform,opacity] focus:shadow-outline mx-4 max-h-[80vh] flex flex-col"
+          className="w-[calc(100vw-2rem)] max-w-2xl rounded bg-gray-800 pt-8 px-4 pb-4 shadow-lg will-change-[transform,opacity] focus:outline-none mx-4 max-h-[80vh] flex flex-col"
           sideOffset={5}
         >
           {children}
