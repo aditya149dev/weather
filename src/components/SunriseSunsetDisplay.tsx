@@ -14,6 +14,7 @@ interface TimeDisplayProps {
   altText: string;
   tooltipText: string;
   time: string;
+  className?: string;
 }
 
 const TimeDisplay: React.FC<TimeDisplayProps> = ({
@@ -21,12 +22,13 @@ const TimeDisplay: React.FC<TimeDisplayProps> = ({
   altText,
   tooltipText,
   time,
+  className,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <span
-      className="ml-6 relative align-middle"
+      className={`relative align-middle ${className}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -45,6 +47,7 @@ const SunriseSunsetDisplay: React.FC<SunriseSunsetDisplayProps> = ({
   localtime,
   sunrise,
   sunset,
+  className,
 }) => {
   const localDate = new Date(localtime);
   const localDatePart = localtime.split(" ")[0];
@@ -62,6 +65,7 @@ const SunriseSunsetDisplay: React.FC<SunriseSunsetDisplayProps> = ({
         altText="Sunrise"
         tooltipText="Sunrise"
         time={sunrise}
+        className={className}
       />
     );
   } else {
@@ -71,6 +75,7 @@ const SunriseSunsetDisplay: React.FC<SunriseSunsetDisplayProps> = ({
         altText="Sunset"
         tooltipText="Sunset"
         time={sunset}
+        className={className}
       />
     );
   }

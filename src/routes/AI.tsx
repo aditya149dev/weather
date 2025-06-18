@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useGemini } from "../hooks/useGemini";
 import AIChat from "../components/AIChat";
 import PopoverUI from "../components/ui/PopoverUI";
 import AISummary from "../components/AISummary";
+import { useGemini } from "../hooks/useGemini";
 
 const AI = () => {
   const [chatInputText, setChatInputText] = useState<string>("");

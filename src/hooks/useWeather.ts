@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import WeatherCard from "../components/WeatherCard";
 import type { WeatherData } from "../components/WeatherCard";
 import { getMockWeatherData } from "../services/mockWeatherService";
 
 const API_KEY = import.meta.env.VITE_WEATHERSTACK_API_KEY;
 
-const Weather = () => {
+export const useWeather = () => {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const weatherDataRef = useRef(weatherData);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -53,7 +52,9 @@ const Weather = () => {
   }, []);
 
   useEffect(() => {
-    fetchWeatherData(locationQuery);
+    if (locationQuery) {
+      fetchWeatherData(locationQuery);
+    }
   }, [fetchWeatherData, locationQuery]);
 
   const handleSearch = useCallback(
@@ -64,25 +65,12 @@ const Weather = () => {
     [fetchWeatherData]
   );
 
-  return (
-    <>
-      {error && (
-        <p className="text-red-400 text-lg font-semibold mb-4">{error}</p>
-      )}
-      {weatherData ? (
-        <div className="relative">
-          <WeatherCard
-            weatherData={weatherData}
-            onRefresh={() => fetchWeatherData(locationQuery)}
-            isLoading={isLoading}
-            onSearch={handleSearch}
-          />
-        </div>
-      ) : (
-        !error && <p>Loading...</p>
-      )}
-    </>
-  );
+  return {
+    weatherData,
+    isLoading,
+    error,
+    handleSearch,
+    locationQuery,
+    fetchWeatherData,
+  };
 };
-
-export default Weather;

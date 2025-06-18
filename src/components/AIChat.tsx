@@ -1,9 +1,9 @@
 import React from "react";
-import { FormUI } from "./ui/FormUI";
 import AIResponseDisplay from "./AIResponseDisplay";
+import { FormUI } from "./ui/FormUI";
 import UpArrowIcon from "../assets/upArrow.svg";
 
-interface AskAIProps {
+interface AIChatProps {
   inputText: string;
   setInputText: (text: string) => void;
   geminiResponse: string | null;
@@ -19,7 +19,7 @@ const AIChat = ({
   isLoading,
   error,
   onGenerateContent,
-}: AskAIProps) => {
+}: AIChatProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputText.trim()) {

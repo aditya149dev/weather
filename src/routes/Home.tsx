@@ -1,7 +1,16 @@
 import { Link } from "react-router-dom";
-import Weather from "../components/Weather";
+import WeatherCard from "../components/WeatherCard";
+import { useWeather } from "../hooks/useWeather";
 
 const Home = () => {
+  const {
+    weatherData,
+    isLoading,
+    error,
+    handleSearch,
+    locationQuery,
+    fetchWeatherData,
+  } = useWeather();
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative">
       <Link
@@ -11,7 +20,21 @@ const Home = () => {
         AI
       </Link>
       <div className="flex flex-col items-center justify-center">
-        <Weather />
+        {error && (
+          <p className="text-red-400 text-lg font-semibold mb-4">{error}</p>
+        )}
+        {weatherData ? (
+          <div className="relative">
+            <WeatherCard
+              weatherData={weatherData}
+              onRefresh={() => fetchWeatherData(locationQuery)}
+              isLoading={isLoading}
+              onSearch={handleSearch}
+            />
+          </div>
+        ) : (
+          !error && <p>Loading...</p>
+        )}
       </div>
     </div>
   );

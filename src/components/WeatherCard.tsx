@@ -1,14 +1,15 @@
-import refreshIcon from "../assets/refresh.svg";
 import { useState, useEffect } from "react";
 import SunriseSunsetDisplay from "./SunriseSunsetDisplay";
 import WeatherDetailBox from "./WeatherDetailBox";
+import { convertUTCToLocal } from "../utilities/timeConverter";
+import { FormUI } from "./ui/FormUI";
+import refreshIcon from "../assets/refresh.svg";
 import humidityIcon from "../assets/humidity.svg";
 import windIcon from "../assets/wind.svg";
 import maskIcon from "../assets/mask.svg";
 import binocularsIcon from "../assets/binoculars.svg";
 import uvIcon from "../assets/uv.svg";
 import rainIcon from "../assets/rain.svg";
-import { convertUTCToLocal } from "../utilities/timeConverter";
 
 export interface WeatherData {
   request: {
@@ -97,17 +98,16 @@ const WeatherCard = ({
     }
   }, [weatherData.current.observation_time, weatherData]);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      onSearch(searchQuery);
+  const handleSearchSubmit = (query: string) => {
+    if (query.trim()) {
+      onSearch(query);
     } else {
       onSearch("fetch:ip");
     }
   };
 
   return (
-    <div className="bg-gray-800 pt-2 px-4 pb-4 rounded-lg shadow-lg max-w-md w-full text-center relative">
+    <div className="bg-gray-800 pt-2 px-4 pb-4 rounded-lg shadow-lg max-w-md lg:[@media(max-height:600px)]:max-w-4xl w-full text-center lg:[@media(max-height:600px)]:text-left relative">
       {isLoading && (
         <div className="absolute inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center rounded-lg z-10">
           <p className="text-lg font-semibold text-white">Loading...</p>
@@ -127,101 +127,114 @@ const WeatherCard = ({
           />
         </button>
       </div>
-      <form onSubmit={handleSearchSubmit} className="mt-2 mb-4">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search location..."
-          className="w-full py-1 px-2 border border-gray-600 rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none"
-        />
-      </form>
-      <img
-        src={weatherData.current.weather_icons[0]}
-        alt="Weather Icon"
-        className="mx-auto mb-2"
+      <FormUI
+        value={searchQuery}
+        onChange={(value) => setSearchQuery(value)}
+        onSearch={handleSearchSubmit}
+        placeholder="Search location..."
+        isExpandable={false}
+        className="mt-2 mb-4 w-full py-1 px-2 border border-gray-600 rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none"
       />
-      <div className="text-lg text-gray-300 mb-5">
-        {weatherData.current.weather_descriptions[0]}
-      </div>
-      <p className="text-4xl font-semibold mb-3 text-white">
-        {weatherData.current.temperature}°C
-        <span
-          className="text-sm text-gray-400 relative inline-block ml-3"
-          onMouseEnter={() => setIsFeelsLikeHovered(true)}
-          onMouseLeave={() => setIsFeelsLikeHovered(false)}
-        >
-          {" "}
-          ({weatherData.current.feelslike}°C)
-          {isFeelsLikeHovered && (
-            <div className="absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded-md whitespace-nowrap">
-              Feels Like
+      <div className="lg:[@media(max-height:600px)]:flex lg:[@media(max-height:600px)]:gap-8">
+        <div className="lg:[@media(max-height:600px)]:w-1/2 lg:[@media(max-height:600px)]:flex-none">
+          <div className="flex flex-col items-center lg:[@media(max-height:600px)]:flex-row lg:[@media(max-height:600px)]:items-center lg:[@media(max-height:600px)]:gap-4">
+            <img
+              src={weatherData.current.weather_icons[0]}
+              alt="Weather Icon"
+              className="w-24 h-24 lg:[@media(max-height:600px)]:w-32 lg:[@media(max-height:600px)]:h-32 mb-2 lg:[@media(max-height:600px)]:mb-0"
+            />
+            <div className="text-center">
+              <div className="text-lg text-gray-300 mb-1 lg:[@media(max-height:600px)]:mb-6">
+                {weatherData.current.weather_descriptions[0]}
+              </div>
+              <p className="text-4xl font-semibold text-white lg:[@media(max-height:600px)]:flex lg:[@media(max-height:600px)]:flex-col lg:[@media(max-height:600px)]:items-center lg:[@media(max-height:600px)]:leading-none">
+                <span>{weatherData.current.temperature}°C</span>
+                <span
+                  className="text-sm text-gray-400 relative inline-block ml-3 lg:[@media(max-height:600px)]:ml-0 lg:[@media(max-height:600px)]:mt-2"
+                  onMouseEnter={() => setIsFeelsLikeHovered(true)}
+                  onMouseLeave={() => setIsFeelsLikeHovered(false)}
+                >
+                  {" "}
+                  ({weatherData.current.feelslike}°C)
+                  {isFeelsLikeHovered && (
+                    <div className="absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded-md whitespace-nowrap">
+                      Feels Like
+                    </div>
+                  )}
+                </span>
+              </p>
             </div>
-          )}
-        </span>
-      </p>
-      <h2 className="text-2xl font-bold mb-0.5 text-white">
-        {weatherData.location.name}
-      </h2>
-      <p className="text-sm text-gray-400 mb-4">
-        {new Date(weatherData.location.localtime).toLocaleDateString([], {
-          weekday: "long",
-        })}{" "}
-        {new Date(weatherData.location.localtime).toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        })}
-        <SunriseSunsetDisplay
-          localtime={weatherData.location.localtime}
-          sunrise={weatherData.current.astro.sunrise}
-          sunset={weatherData.current.astro.sunset}
-          className="ml-2"
-        />
-      </p>
-      <div className="mt-6 grid grid-cols-3 gap-3 text-left">
-        <WeatherDetailBox
-          iconSrc={windIcon}
-          text={`${weatherData.current.wind_speed} km/h`}
-          label={`Wind: ${weatherData.current.wind_degree}° ${weatherData.current.wind_dir}`}
-          param="wind_speed"
-          value={weatherData.current.wind_speed}
-        />
-        <WeatherDetailBox
-          iconSrc={rainIcon}
-          text={`${weatherData.current.precip} mm`}
-          label="Precipitation"
-          param="precip"
-          value={weatherData.current.precip}
-        />
-        <WeatherDetailBox
-          iconSrc={maskIcon}
-          text={`${weatherData.current.air_quality["us-epa-index"]}`}
-          label="Air Quality: us-epa-index"
-          param="us-epa-index"
-          value={parseInt(weatherData.current.air_quality["us-epa-index"])}
-        />
-        <WeatherDetailBox
-          iconSrc={binocularsIcon}
-          text={`${weatherData.current.visibility} km`}
-          label="Visibility"
-          param="visibility"
-          value={weatherData.current.visibility}
-        />
-        <WeatherDetailBox
-          iconSrc={humidityIcon}
-          text={`${weatherData.current.humidity}%`}
-          label="Humidity"
-          param="humidity"
-          value={weatherData.current.humidity}
-        />
-        <WeatherDetailBox
-          iconSrc={uvIcon}
-          text={`${weatherData.current.uv_index}`}
-          label="UV Index"
-          param="uv_index"
-          value={weatherData.current.uv_index}
-        />
+          </div>
+          <h2 className="text-2xl font-bold mt-4 mb-0.5 text-white lg:[@media(max-height:600px)]:mb-2 lg:[@media(max-height:600px)]:mt-6 text-center">
+            {weatherData.location.name}
+          </h2>
+          <div className="text-sm text-gray-400 mb-4 lg:[@media(max-height:600px)]:flex lg:[@media(max-height:600px)]:flex-col lg:[@media(max-height:600px)]:items-center">
+            <span>
+              {new Date(weatherData.location.localtime).toLocaleDateString([], {
+                weekday: "long",
+              })}{" "}
+              {new Date(weatherData.location.localtime)
+                .toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                })
+                .toUpperCase()}
+            </span>
+            <SunriseSunsetDisplay
+              localtime={weatherData.location.localtime}
+              sunrise={weatherData.current.astro.sunrise}
+              sunset={weatherData.current.astro.sunset}
+              className="ml-2 sm:ml-4 lg:[@media(max-height:600px)]:ml-0 lg:[@media(max-height:600px)]:mt-1"
+            />
+          </div>
+        </div>
+        <div className="lg:[@media(max-height:600px)]:w-1/2">
+          <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:[@media(max-height:600px)]:grid-cols-2 gap-3 text-left lg:[@media(max-height:600px)]:mt-0">
+            <WeatherDetailBox
+              iconSrc={windIcon}
+              text={`${weatherData.current.wind_speed} km/h`}
+              label={`Wind: ${weatherData.current.wind_degree}° ${weatherData.current.wind_dir}`}
+              param="wind_speed"
+              value={weatherData.current.wind_speed}
+            />
+            <WeatherDetailBox
+              iconSrc={rainIcon}
+              text={`${weatherData.current.precip} mm`}
+              label="Precipitation"
+              param="precip"
+              value={weatherData.current.precip}
+            />
+            <WeatherDetailBox
+              iconSrc={maskIcon}
+              text={`${weatherData.current.air_quality["us-epa-index"]}`}
+              label="Air Quality: us-epa-index"
+              param="us-epa-index"
+              value={parseInt(weatherData.current.air_quality["us-epa-index"])}
+            />
+            <WeatherDetailBox
+              iconSrc={binocularsIcon}
+              text={`${weatherData.current.visibility} km`}
+              label="Visibility"
+              param="visibility"
+              value={weatherData.current.visibility}
+            />
+            <WeatherDetailBox
+              iconSrc={humidityIcon}
+              text={`${weatherData.current.humidity}%`}
+              label="Humidity"
+              param="humidity"
+              value={weatherData.current.humidity}
+            />
+            <WeatherDetailBox
+              iconSrc={uvIcon}
+              text={`${weatherData.current.uv_index}`}
+              label="UV Index"
+              param="uv_index"
+              value={weatherData.current.uv_index}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
