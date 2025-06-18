@@ -1,7 +1,8 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  readonly VITE_WEATHERSTACK_API_KEY: string; //add key in .env at root
+  readonly VITE_WEATHERSTACK_API_KEY: string;
+  readonly VITE_GEMINI_API_KEY: string;
 }
 
 interface ImportMeta {

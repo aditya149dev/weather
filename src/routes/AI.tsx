@@ -1,7 +1,36 @@
+import { useState } from "react";
+import { useGemini } from "../hooks/useGemini";
+import AIChat from "../components/AIChat";
+import PopoverUI from "../components/ui/PopoverUI";
+
 const AI = () => {
+  const [chatInputText, setChatInputText] = useState<string>("");
+
+  const {
+    geminiResponse: chatGeminiResponse,
+    isLoading: isChatLoading,
+    error: chatError,
+    generateContent: generateChatContent,
+  } = useGemini();
+
+  const handleChatGenerate = () => {
+    generateChatContent(chatInputText);
+  };
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center">
-      AI
+    <div className="min-h-screen flex flex-col items-center p-8">
+      <div className="flex flex-col gap-8">
+        <PopoverUI triggerText="AI Chat">
+          <AIChat
+            inputText={chatInputText}
+            setInputText={setChatInputText}
+            geminiResponse={chatGeminiResponse}
+            isLoading={isChatLoading}
+            error={chatError}
+            onGenerateContent={handleChatGenerate}
+          />
+        </PopoverUI>
+      </div>
     </div>
   );
 };
