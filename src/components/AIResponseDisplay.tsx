@@ -28,25 +28,24 @@ const AIResponseDisplay: React.FC<AIResponseDisplayProps> = ({
   }
 
   return (
-    <div className="p-2 rounded-md w-full flex-grow bg-gray-800 relative">
-      <div className="absolute top-2 right-2">
-        <button
-          type="button"
-          onClick={handleCopy}
-          className={`bg-gray-700 rounded-md hover:bg-gray-600 w-7 h-7 flex items-center justify-center cursor-pointer ${
-            isAnimating ? "button-pop" : ""
-          }`}
-        >
-          <img src={CopyIcon} alt="Copy" className="w-6 h-6" />
-        </button>
-      </div>
-      <div
-        ref={responseRef}
-        className="prose prose-invert w-full overflow-y-auto"
-      >
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {geminiResponse}
-        </ReactMarkdown>
+    <div className="p-2 rounded-md w-full flex-grow bg-gray-800">
+      <div className="prose prose-invert w-full overflow-y-auto">
+        <div className="not-prose float-right pl-2 pb-1">
+          <button
+            type="button"
+            onClick={handleCopy}
+            className={`bg-gray-700 rounded-md hover:bg-gray-600 w-7 h-7 flex items-center justify-center cursor-pointer ${
+              isAnimating ? "button-pop" : ""
+            }`}
+          >
+            <img src={CopyIcon} alt="Copy" className="w-6 h-6" />
+          </button>
+        </div>
+        <div ref={responseRef}>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {geminiResponse}
+          </ReactMarkdown>
+        </div>
       </div>
     </div>
   );
