@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useRef, useLayoutEffect } from "react";
 import AIResponseDisplay from "./AIResponseDisplay";
-import { FormUI } from "./ui/FormUI";
 import UpArrowIcon from "../assets/upArrow.svg";
 
 interface AIChatProps {
@@ -20,12 +19,41 @@ const AIChat = ({
   error,
   onGenerateContent,
 }: AIChatProps) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputText.trim()) {
       onGenerateContent(inputText);
     }
   };
+
+  useLayoutEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+
+      const computedStyle = window.getComputedStyle(textarea);
+      const lineHeight = parseFloat(computedStyle.lineHeight);
+
+      const paddingTop = parseFloat(computedStyle.paddingTop);
+      const paddingBottom = parseFloat(computedStyle.paddingBottom);
+
+      const maxLines = 6;
+      const maxHeight = maxLines * lineHeight + paddingTop + paddingBottom;
+
+      const scrollHeight = textarea.scrollHeight;
+
+      if (scrollHeight > maxHeight) {
+        textarea.style.height = `${maxHeight}px`;
+        textarea.style.overflowY = "scroll";
+        textarea.scrollTop = textarea.scrollHeight;
+      } else {
+        textarea.style.height = `${scrollHeight}px`;
+        textarea.style.overflowY = "hidden";
+      }
+    }
+  }, [inputText]);
 
   return (
     <>
@@ -34,13 +62,24 @@ const AIChat = ({
           onSubmit={handleSubmit}
           className="flex flex-col w-full bg-gray-700 border border-gray-600 rounded-md p-2"
         >
-          <FormUI
+          <textarea
+            ref={textareaRef}
             value={inputText}
-            onChange={setInputText}
-            onSearch={onGenerateContent}
+            onChange={(e) => setInputText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmit(
+                  e as unknown as React.FormEvent<HTMLTextAreaElement>
+                );
+              }
+            }}
+            rows={2}
             placeholder="Ask anything..."
-            isExpandable={true}
             className="bg-transparent border-none focus:outline-none w-full text-white placeholder-gray-400 resize-none scrollbar-hide"
+            style={{
+              lineHeight: "1.5rem",
+            }}
           />
           <div className="flex items-center w-full justify-between">
             <p

@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import SunriseSunset from "./SunriseSunset";
 import WeatherDetailBox from "./WeatherDetailBox";
 import { convertUTCToLocal } from "../utilities/timeConverter";
-import { FormUI } from "./ui/FormUI";
 import refreshIcon from "../assets/refresh.svg";
 import humidityIcon from "../assets/humidity.svg";
 import windIcon from "../assets/wind.svg";
@@ -113,11 +112,11 @@ const WeatherCard = ({
           <p className="text-lg font-semibold text-white">Loading...</p>
         </div>
       )}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-2">
         <div className="text-sm text-gray-400">{localObservationTime}</div>
         <button
           onClick={onRefresh}
-          className="p-1 rounded-full bg-gray-700 hover:bg-gray-600 focus:outline-none"
+          className="p-1 rounded-full bg-gray-700 hover:bg-gray-600 focus:outline-none cursor-pointer"
           aria-label="Refresh Weather"
         >
           <img
@@ -129,14 +128,21 @@ const WeatherCard = ({
           />
         </button>
       </div>
-      <FormUI
-        value={searchQuery}
-        onChange={(value) => setSearchQuery(value)}
-        onSearch={handleSearchSubmit}
-        placeholder="Search location..."
-        isExpandable={false}
-        className="mt-2 mb-4 w-full py-1 px-2 border border-gray-600 rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none"
-      />
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSearchSubmit(searchQuery);
+        }}
+        className="w-full mb-2"
+      >
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search location..."
+          className="w-full py-1 px-2 border border-gray-600 rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none"
+        />
+      </form>
       <div className="lg:[@media(max-height:600px)]:flex lg:[@media(max-height:600px)]:gap-8">
         <div className="lg:[@media(max-height:600px)]:w-1/2 lg:[@media(max-height:600px)]:flex-none">
           <div className="flex flex-col items-center lg:[@media(max-height:600px)]:flex-row lg:[@media(max-height:600px)]:items-center lg:[@media(max-height:600px)]:gap-4">

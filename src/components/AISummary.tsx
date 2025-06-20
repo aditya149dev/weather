@@ -16,12 +16,36 @@ const AISummary = ({
   onGenerateSummary,
 }: AISummaryProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
     } else {
       setSelectedFile(null);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const droppedFile = e.dataTransfer.files[0];
+      if (droppedFile.type === "application/pdf") {
+        setSelectedFile(droppedFile);
+      } else {
+        setSelectedFile(null);
+      }
     }
   };
 
@@ -41,11 +65,16 @@ const AISummary = ({
         >
           <label
             htmlFor="file-upload"
-            className="flex flex-col items-center justify-center w-full p-4 rounded-lg cursor-pointer hover:bg-gray-800 bg-transparent border-2 border-dashed border-gray-500"
+            className={`flex flex-col items-center justify-center w-full p-4 rounded-lg cursor-pointer bg-transparent border-2 border-dashed ${
+              isDragging ? "border-blue-400" : "border-gray-500"
+            } ${selectedFile ? "hover:bg-gray-700" : "hover:bg-gray-800"}`}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
           >
             <div className="text-center">
               <p className="text-sm text-gray-300">
-                {selectedFile ? selectedFile.name : "Select a PDF file"}
+                {selectedFile ? selectedFile.name : "Select or Drag a PDF file"}
               </p>
               {!selectedFile && (
                 <p className="text-xs text-gray-500 mt-1">
@@ -57,7 +86,7 @@ const AISummary = ({
               id="file-upload"
               type="file"
               accept=".pdf"
-              onChange={handleFileChange}
+              onChange={handleFileInputChange}
               className="hidden"
             />
           </label>
