@@ -20,21 +20,15 @@ const Home = () => {
         AI
       </Link>
       <div className="flex flex-col items-center justify-center">
-        {error && (
-          <p className="text-red-400 text-lg font-semibold mb-4">{error}</p>
-        )}
-        {weatherData ? (
-          <div className="relative">
-            <WeatherCard
-              weatherData={weatherData}
-              onRefresh={() => fetchWeatherData(locationQuery)}
-              isLoading={isLoading}
-              onSearch={handleSearch}
-            />
-          </div>
-        ) : (
-          !error && <p>Loading...</p>
-        )}
+        <div className="relative">
+          <WeatherCard
+            weatherData={weatherData}
+            onRefresh={() => fetchWeatherData(locationQuery)}
+            isLoading={isLoading}
+            onSearch={handleSearch}
+            error={error}
+          />
+        </div>
       </div>
     </div>
   );
