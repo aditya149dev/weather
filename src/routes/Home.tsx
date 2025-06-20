@@ -1,16 +1,29 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import WeatherCard from "../components/WeatherCard";
+import { useAppSelector } from "../redux/hooks";
+import {
+  selectError,
+  selectIsLoading,
+  selectLocationQuery,
+  selectWeatherData,
+} from "../features/weather/weatherSlice";
 import { useWeather } from "../hooks/useWeather";
 
 const Home = () => {
-  const {
-    weatherData,
-    isLoading,
-    error,
-    handleSearch,
-    locationQuery,
-    fetchWeatherData,
-  } = useWeather();
+  const weatherData = useAppSelector(selectWeatherData);
+  const isLoading = useAppSelector(selectIsLoading);
+  const error = useAppSelector(selectError);
+  const locationQuery = useAppSelector(selectLocationQuery);
+
+  const { fetchWeatherData, handleSearch, handleRefresh } = useWeather();
+
+  useEffect(() => {
+    if (!weatherData && locationQuery) {
+      fetchWeatherData(locationQuery);
+    }
+  }, [weatherData, locationQuery, fetchWeatherData]);
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative">
       <Link
@@ -23,7 +36,7 @@ const Home = () => {
         <div className="relative">
           <WeatherCard
             weatherData={weatherData}
-            onRefresh={() => fetchWeatherData(locationQuery)}
+            onRefresh={() => handleRefresh(locationQuery)}
             isLoading={isLoading}
             onSearch={handleSearch}
             error={error}

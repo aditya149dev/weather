@@ -3,9 +3,14 @@ import AIChat from "../components/AIChat";
 import PopoverUI from "../components/ui/PopoverUI";
 import AISummary from "../components/AISummary";
 import { useGemini } from "../hooks/useGemini";
+import { useAppSelector } from "../redux/hooks";
+import { selectWeatherData } from "../features/weather/weatherSlice";
 
 const AI = () => {
   const [chatInputText, setChatInputText] = useState<string>("");
+
+  const weatherData = useAppSelector(selectWeatherData);
+  console.log("Weather Data in /ai:", weatherData);
 
   const {
     geminiResponse: chatGeminiResponse,
