@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import SunriseSunset from "./SunriseSunset";
 import WeatherDetailBox from "./WeatherDetailBox";
 import { convertUTCToLocal } from "../utilities/timeConverter";
@@ -9,67 +9,7 @@ import maskIcon from "../assets/mask.svg";
 import binocularsIcon from "../assets/binoculars.svg";
 import uvIcon from "../assets/uv.svg";
 import rainIcon from "../assets/rain.svg";
-
-export interface WeatherData {
-  request: {
-    type: string;
-    query: string;
-    language: string;
-    unit: string;
-  };
-  location: {
-    name: string;
-    country: string;
-    region: string;
-    lat: string;
-    lon: string;
-    timezone_id: string;
-    localtime: string;
-    localtime_epoch: number;
-    utc_offset: string;
-  };
-  current: {
-    observation_time: string;
-    temperature: number;
-    weather_code: number;
-    weather_icons: string[];
-    weather_descriptions: string[];
-    astro: {
-      sunrise: string;
-      sunset: string;
-      moonrise: string;
-      moonset: string;
-      moon_phase: string;
-      moon_illumination: number;
-    };
-    air_quality: {
-      co: string;
-      no2: string;
-      o3: string;
-      so2: string;
-      pm2_5: string;
-      pm10: string;
-      "us-epa-index": string;
-      "gb-defra-index": string;
-    };
-    wind_speed: number;
-    wind_degree: number;
-    wind_dir: string;
-    pressure: number;
-    precip: number;
-    humidity: number;
-    cloudcover: number;
-    feelslike: number;
-    uv_index: number;
-    visibility: number;
-  };
-  success?: boolean;
-  error?: {
-    code: number;
-    type: string;
-    info: string;
-  };
-}
+import type { WeatherData } from "../types/weather";
 
 interface WeatherCardProps {
   weatherData: WeatherData;
@@ -86,16 +26,17 @@ const WeatherCard = ({
 }: WeatherCardProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isFeelsLikeHovered, setIsFeelsLikeHovered] = useState(false);
-  const [localObservationTime, setLocalObservationTime] = useState("");
 
-  useEffect(() => {
+  const localObservationTime = useMemo(() => {
     if (weatherData.current.observation_time) {
       const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      setLocalObservationTime(
-        convertUTCToLocal(weatherData.current.observation_time, userTimeZone)
+      return convertUTCToLocal(
+        weatherData.current.observation_time,
+        userTimeZone
       );
     }
-  }, [weatherData.current.observation_time, weatherData]);
+    return "";
+  }, [weatherData]);
 
   const handleSearchSubmit = (query: string) => {
     if (query.trim()) {

@@ -11,6 +11,10 @@ const AIResponseDisplay = ({ geminiResponse }: AIResponseDisplayProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const responseRef = useRef<HTMLDivElement>(null);
 
+  if (!geminiResponse) {
+    return null;
+  }
+
   const handleCopy = () => {
     if (responseRef.current) {
       navigator.clipboard.writeText(responseRef.current.innerText);
@@ -20,10 +24,6 @@ const AIResponseDisplay = ({ geminiResponse }: AIResponseDisplayProps) => {
       setIsAnimating(false);
     }, 200);
   };
-
-  if (!geminiResponse) {
-    return null;
-  }
 
   return (
     <div className="p-2 rounded-md w-full flex-grow bg-gray-800">

@@ -14,13 +14,10 @@ export const useGemini = () => {
       setError(null);
       setGeminiResponse(null);
 
-      if (!API_KEY) {
-        setError("Gemini API Key is not set.");
-        setIsLoading(false);
-        return;
-      }
-
       try {
+        if (!API_KEY) {
+          throw new Error("API Key is not set.");
+        }
         const contents = await generationTask();
 
         const ai = new GoogleGenAI({ apiKey: API_KEY });
