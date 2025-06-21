@@ -4,8 +4,8 @@ import { useAppDispatch } from "../redux/hooks";
 import {
   changeGeminiChatResponse,
   changeGeminiSummaryResponse,
-  changeIsLoading,
-  changeError,
+  changeGeminiIsLoading,
+  changeGeminiError,
 } from "../features/gemini/geminiSlice";
 import type { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 
@@ -19,8 +19,8 @@ export const useGemini = () => {
       generationTask: () => Promise<Part[]>,
       dispatchAction: ActionCreatorWithPayload<string | null, string>
     ) => {
-      dispatch(changeIsLoading(true));
-      dispatch(changeError(null));
+      dispatch(changeGeminiIsLoading(true));
+      dispatch(changeGeminiError(null));
       dispatch(dispatchAction(null));
 
       try {
@@ -39,12 +39,12 @@ export const useGemini = () => {
       } catch (err) {
         console.error("Error during generation:", err);
         if (err instanceof Error) {
-          dispatch(changeError(err.message));
+          dispatch(changeGeminiError(err.message));
         } else {
-          dispatch(changeError("An unknown error occurred."));
+          dispatch(changeGeminiError("An unknown error occurred."));
         }
       } finally {
-        dispatch(changeIsLoading(false));
+        dispatch(changeGeminiIsLoading(false));
       }
     },
     [dispatch]

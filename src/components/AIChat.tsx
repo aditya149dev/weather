@@ -25,6 +25,7 @@ const AIChat = ({
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
+  const changeInputText = (text: string) => dispatch(changeChatInputText(text));
   const inputText = useAppSelector(selectChatInputText);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -77,7 +78,7 @@ const AIChat = ({
           <textarea
             ref={textareaRef}
             value={inputText}
-            onChange={(e) => dispatch(changeChatInputText(e.target.value))}
+            onChange={(e) => changeInputText(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();

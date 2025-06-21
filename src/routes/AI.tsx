@@ -9,7 +9,7 @@ import { selectLocationQuery } from "../features/input/inputSlice";
 import {
   selectGeminiChatResponse,
   selectGeminiSummaryResponse,
-  selectIsGeminiLoading,
+  selectGeminiIsLoading,
   selectGeminiError,
 } from "../features/gemini/geminiSlice";
 
@@ -23,7 +23,7 @@ const AI = () => {
 
   const chatGeminiResponse = useAppSelector(selectGeminiChatResponse);
   const summaryGeminiResponse = useAppSelector(selectGeminiSummaryResponse);
-  const isLoading = useAppSelector(selectIsGeminiLoading);
+  const isLoading = useAppSelector(selectGeminiIsLoading);
   const error = useAppSelector(selectGeminiError);
 
   const { generateContent: generateChatContent } = useGemini();

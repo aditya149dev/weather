@@ -24,13 +24,15 @@ const AISummary = ({
   const [isDragging, setIsDragging] = useState(false);
 
   const dispatch = useAppDispatch();
+  const changeSelectedFile = (file: File | null) =>
+    dispatch(changeSummarySelectedFile(file));
   const selectedFile = useAppSelector(selectSummarySelectedFile);
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      dispatch(changeSummarySelectedFile(e.target.files[0]));
+      changeSelectedFile(e.target.files[0]);
     } else {
-      dispatch(changeSummarySelectedFile(null));
+      changeSelectedFile(null);
     }
   };
 
@@ -50,9 +52,9 @@ const AISummary = ({
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const droppedFile = e.dataTransfer.files[0];
       if (droppedFile.type === "application/pdf") {
-        dispatch(changeSummarySelectedFile(droppedFile));
+        changeSelectedFile(droppedFile);
       } else {
-        dispatch(changeSummarySelectedFile(null));
+        changeSelectedFile(null);
       }
     }
   };

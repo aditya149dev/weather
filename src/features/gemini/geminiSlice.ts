@@ -29,10 +29,10 @@ export const geminiSlice = createSlice({
     ) => {
       state.summaryGeminiResponse = action.payload;
     },
-    changeIsLoading: (state, action: PayloadAction<boolean>) => {
+    changeGeminiIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
-    changeError: (state, action: PayloadAction<string | null>) => {
+    changeGeminiError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
   },
@@ -41,15 +41,15 @@ export const geminiSlice = createSlice({
 export const {
   changeGeminiChatResponse,
   changeGeminiSummaryResponse,
-  changeIsLoading,
-  changeError,
+  changeGeminiIsLoading,
+  changeGeminiError,
 } = geminiSlice.actions;
 
 export const selectGeminiChatResponse = (state: RootState) =>
   state.gemini.chatGeminiResponse;
 export const selectGeminiSummaryResponse = (state: RootState) =>
   state.gemini.summaryGeminiResponse;
-export const selectIsGeminiLoading = (state: RootState) =>
+export const selectGeminiIsLoading = (state: RootState) =>
   state.gemini.isLoading;
 export const selectGeminiError = (state: RootState) => state.gemini.error;
 

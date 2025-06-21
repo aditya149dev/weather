@@ -30,6 +30,7 @@ const WeatherCard = ({
   const [isFeelsLikeHovered, setIsFeelsLikeHovered] = useState(false);
 
   const dispatch = useAppDispatch();
+  const changeQuery = (query: string) => dispatch(changeLocationQuery(query));
 
   const localObservationTime = useMemo(() => {
     if (weatherData?.current.observation_time) {
@@ -44,7 +45,7 @@ const WeatherCard = ({
 
   const handleSearchSubmit = (query: string) => {
     if (query.trim()) {
-      dispatch(changeLocationQuery(query));
+      changeQuery(query);
     }
   };
 
