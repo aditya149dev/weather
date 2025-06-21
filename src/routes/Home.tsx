@@ -1,28 +1,20 @@
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import WeatherCard from "../components/WeatherCard";
-import { useAppSelector } from "../redux/hooks";
+import { useWeatherQuery } from "../services/weatherApi";
+import { simpleErrorMessage } from "../utilities/simpleErrorMessage";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
-  selectError,
-  selectIsLoading,
+  changeLocationQuery,
   selectLocationQuery,
-  selectWeatherData,
-} from "../features/weather/weatherSlice";
-import { useWeather } from "../hooks/useWeather";
+} from "../features/location/locationSlice";
 
 const Home = () => {
-  const weatherData = useAppSelector(selectWeatherData);
-  const isLoading = useAppSelector(selectIsLoading);
-  const error = useAppSelector(selectError);
+  const dispatch = useAppDispatch();
   const locationQuery = useAppSelector(selectLocationQuery);
 
-  const { fetchWeatherData, handleSearch, handleRefresh } = useWeather();
-
-  useEffect(() => {
-    if (!weatherData && locationQuery) {
-      fetchWeatherData(locationQuery);
-    }
-  }, [weatherData, locationQuery, fetchWeatherData]);
+  const { data, error, isLoading, refetch } = useWeatherQuery(
+    locationQuery || "fetch:ip"
+  );
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative">
@@ -35,11 +27,11 @@ const Home = () => {
       <div className="flex flex-col items-center justify-center">
         <div className="relative">
           <WeatherCard
-            weatherData={weatherData}
-            onRefresh={() => handleRefresh(locationQuery)}
+            weatherData={data || null}
+            onRefresh={() => refetch()}
             isLoading={isLoading}
-            onSearch={handleSearch}
-            error={error}
+            onSearch={(query) => dispatch(changeLocationQuery(query))}
+            error={simpleErrorMessage(error)}
           />
         </div>
       </div>

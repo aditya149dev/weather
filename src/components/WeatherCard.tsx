@@ -43,8 +43,6 @@ const WeatherCard = ({
   const handleSearchSubmit = (query: string) => {
     if (query.trim()) {
       onSearch(query);
-    } else {
-      onSearch("fetch:ip");
     }
   };
 

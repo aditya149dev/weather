@@ -3,14 +3,16 @@ import AIChat from "../components/AIChat";
 import PopoverUI from "../components/ui/PopoverUI";
 import AISummary from "../components/AISummary";
 import { useGemini } from "../hooks/useGemini";
+import { useWeatherQuery } from "../services/weatherApi";
 import { useAppSelector } from "../redux/hooks";
-import { selectWeatherData } from "../features/weather/weatherSlice";
+import { selectLocationQuery } from "../features/location/locationSlice";
 
 const AI = () => {
   const [chatInputText, setChatInputText] = useState<string>("");
 
-  const weatherData = useAppSelector(selectWeatherData);
-  console.log("Weather Data in /ai:", weatherData);
+  const locationQuery = useAppSelector(selectLocationQuery);
+  const { data } = useWeatherQuery(locationQuery || "fetch:ip");
+  console.log("Weather Data in /ai:", data);
 
   const {
     geminiResponse: chatGeminiResponse,
