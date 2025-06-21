@@ -5,7 +5,7 @@ import AISummary from "../components/AISummary";
 import { useGemini } from "../hooks/useGemini";
 import { useWeatherQuery } from "../services/weatherApi";
 import { useAppSelector } from "../redux/hooks";
-import { selectLocationQuery } from "../features/location/locationSlice";
+import { selectLocationQuery } from "../features/input/inputSlice";
 import {
   selectGeminiChatResponse,
   selectGeminiSummaryResponse,

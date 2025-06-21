@@ -6,19 +6,19 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
   changeChatInputText,
   selectChatInputText,
-} from "../features/gemini/geminiSlice";
+} from "../features/input/inputSlice";
 
 interface AIChatProps {
   geminiResponse: string | null;
-  isLoading: boolean;
   error: string | null;
+  isLoading: boolean;
   onGenerateContent: (text: string) => void;
 }
 
 const AIChat = ({
   geminiResponse,
-  isLoading,
   error,
+  isLoading,
   onGenerateContent,
 }: AIChatProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);

@@ -9,25 +9,27 @@ import maskIcon from "../assets/mask.svg";
 import binocularsIcon from "../assets/binoculars.svg";
 import uvIcon from "../assets/uv.svg";
 import rainIcon from "../assets/rain.svg";
+import { useAppDispatch } from "../redux/hooks";
+import { changeLocationQuery } from "../features/input/inputSlice";
 import type { WeatherData } from "../types/weather";
 
 interface WeatherCardProps {
   weatherData: WeatherData | null;
-  onRefresh: () => void;
-  isLoading: boolean;
-  onSearch: (query: string) => void;
   error: string | null;
+  isLoading: boolean;
+  onRefresh: () => void;
 }
 
 const WeatherCard = ({
   weatherData,
-  onRefresh,
-  isLoading,
-  onSearch,
   error,
+  isLoading,
+  onRefresh,
 }: WeatherCardProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isFeelsLikeHovered, setIsFeelsLikeHovered] = useState(false);
+
+  const dispatch = useAppDispatch();
 
   const localObservationTime = useMemo(() => {
     if (weatherData?.current.observation_time) {
@@ -42,7 +44,7 @@ const WeatherCard = ({
 
   const handleSearchSubmit = (query: string) => {
     if (query.trim()) {
-      onSearch(query);
+      dispatch(changeLocationQuery(query));
     }
   };
 

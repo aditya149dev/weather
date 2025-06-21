@@ -1,13 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { weatherApi } from "../services/weatherApi";
-import locationReducer from "../features/location/locationSlice";
+import inputReducer from "../features/input/inputSlice";
 import geminiReducer from "../features/gemini/geminiSlice";
 
 export const store = configureStore({
   reducer: {
     [weatherApi.reducerPath]: weatherApi.reducer,
-    location: locationReducer,
+    input: inputReducer,
     gemini: geminiReducer,
   },
   middleware: (getDefaultMiddleware) =>

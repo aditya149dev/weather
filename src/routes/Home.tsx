@@ -2,14 +2,10 @@ import { Link } from "react-router-dom";
 import WeatherCard from "../components/WeatherCard";
 import { useWeatherQuery } from "../services/weatherApi";
 import { simpleErrorMessage } from "../utilities/simpleErrorMessage";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import {
-  changeLocationQuery,
-  selectLocationQuery,
-} from "../features/location/locationSlice";
+import { useAppSelector } from "../redux/hooks";
+import { selectLocationQuery } from "../features/input/inputSlice";
 
 const Home = () => {
-  const dispatch = useAppDispatch();
   const locationQuery = useAppSelector(selectLocationQuery);
 
   const { data, error, isLoading, refetch } = useWeatherQuery(
@@ -28,10 +24,9 @@ const Home = () => {
         <div className="relative">
           <WeatherCard
             weatherData={data || null}
-            onRefresh={() => refetch()}
-            isLoading={isLoading}
-            onSearch={(query) => dispatch(changeLocationQuery(query))}
             error={simpleErrorMessage(error)}
+            isLoading={isLoading}
+            onRefresh={() => refetch()}
           />
         </div>
       </div>

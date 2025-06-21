@@ -6,19 +6,19 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
   changeSummarySelectedFile,
   selectSummarySelectedFile,
-} from "../features/gemini/geminiSlice";
+} from "../features/input/inputSlice";
 
 interface AISummaryProps {
   geminiResponse: string | null;
-  isLoading: boolean;
   error: string | null;
+  isLoading: boolean;
   onGenerateSummary: (file: File) => void;
 }
 
 const AISummary = ({
   geminiResponse,
-  isLoading,
   error,
+  isLoading,
   onGenerateSummary,
 }: AISummaryProps) => {
   const [isDragging, setIsDragging] = useState(false);

@@ -7,9 +7,6 @@ interface GeminiState {
   summaryGeminiResponse: string | null;
   isLoading: boolean;
   error: string | null;
-
-  chatInputText: string | "";
-  summarySelectedFile: File | null;
 }
 
 const initialState: GeminiState = {
@@ -17,9 +14,6 @@ const initialState: GeminiState = {
   summaryGeminiResponse: null,
   isLoading: false,
   error: null,
-
-  chatInputText: "",
-  summarySelectedFile: null,
 };
 
 export const geminiSlice = createSlice({
@@ -41,13 +35,6 @@ export const geminiSlice = createSlice({
     changeError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
-
-    changeChatInputText: (state, action: PayloadAction<string | "">) => {
-      state.chatInputText = action.payload;
-    },
-    changeSummarySelectedFile: (state, action: PayloadAction<File | null>) => {
-      state.summarySelectedFile = action.payload;
-    },
   },
 });
 
@@ -56,8 +43,6 @@ export const {
   changeGeminiSummaryResponse,
   changeIsLoading,
   changeError,
-  changeChatInputText,
-  changeSummarySelectedFile,
 } = geminiSlice.actions;
 
 export const selectGeminiChatResponse = (state: RootState) =>
@@ -67,10 +52,5 @@ export const selectGeminiSummaryResponse = (state: RootState) =>
 export const selectIsGeminiLoading = (state: RootState) =>
   state.gemini.isLoading;
 export const selectGeminiError = (state: RootState) => state.gemini.error;
-
-export const selectChatInputText = (state: RootState) =>
-  state.gemini.chatInputText;
-export const selectSummarySelectedFile = (state: RootState) =>
-  state.gemini.summarySelectedFile;
 
 export default geminiSlice.reducer;
