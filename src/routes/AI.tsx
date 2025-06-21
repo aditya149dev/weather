@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AIChat from "../components/AIChat";
 import PopoverUI from "../components/ui/PopoverUI";
 import AISummary from "../components/AISummary";
@@ -10,6 +10,12 @@ import { selectLocationQuery } from "../features/location/locationSlice";
 const AI = () => {
   const locationQuery = useAppSelector(selectLocationQuery);
   const { data } = useWeatherQuery(locationQuery || "fetch:ip");
+
+  //state of child AIChat and AISummary
+  const [chatInputText, setChatInputText] = useState<string>("");
+  const [summarySelectedFile, setSummarySelectedFile] = useState<File | null>(
+    null
+  );
 
   useEffect(() => {
     console.log("Weather Data in /ai:", data);
@@ -46,6 +52,8 @@ const AI = () => {
             isLoading={isChatLoading}
             error={chatError}
             onGenerateContent={handleChatGenerate}
+            inputText={chatInputText}
+            onInputChange={(text: string) => setChatInputText(text)}
           />
         </PopoverUI>
         <PopoverUI triggerText="AI Summary">
@@ -54,6 +62,8 @@ const AI = () => {
             isLoading={isSummaryLoading}
             error={summaryError}
             onGenerateSummary={handleSummaryGenerate}
+            selectedFile={summarySelectedFile}
+            onFileSelect={(file: File | null) => setSummarySelectedFile(file)}
           />
         </PopoverUI>
       </div>

@@ -7,6 +7,8 @@ interface AIChatProps {
   isLoading: boolean;
   error: string | null;
   onGenerateContent: (text: string) => void;
+  inputText: string;
+  onInputChange: (text: string) => void;
 }
 
 const AIChat = ({
@@ -14,9 +16,10 @@ const AIChat = ({
   isLoading,
   error,
   onGenerateContent,
+  inputText,
+  onInputChange,
 }: AIChatProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [inputText, setInputText] = useState<string>("");
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -51,6 +54,11 @@ const AIChat = ({
         textarea.style.height = `${scrollHeight}px`;
         textarea.style.overflowY = "hidden";
       }
+
+      if (isFocused && inputText.length > 0) {
+        textarea.selectionStart = inputText.length;
+        textarea.selectionEnd = inputText.length;
+      }
     }
   }, [inputText, isFocused]);
 
@@ -64,7 +72,7 @@ const AIChat = ({
           <textarea
             ref={textareaRef}
             value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
+            onChange={(e) => onInputChange(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
@@ -94,6 +102,7 @@ const AIChat = ({
               type="submit"
               className="size-7 flex items-center justify-center bg-gray-300 rounded-full hover:bg-gray-200 cursor-pointer"
               disabled={isLoading}
+              onMouseDown={(e) => e.preventDefault()}
             >
               <img
                 src={UpArrowIcon}

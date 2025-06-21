@@ -7,6 +7,8 @@ interface AISummaryProps {
   isLoading: boolean;
   error: string | null;
   onGenerateSummary: (file: File) => void;
+  selectedFile: File | null;
+  onFileSelect: (file: File | null) => void;
 }
 
 const AISummary = ({
@@ -14,15 +16,16 @@ const AISummary = ({
   isLoading,
   error,
   onGenerateSummary,
+  selectedFile,
+  onFileSelect,
 }: AISummaryProps) => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
+      onFileSelect(e.target.files[0]);
     } else {
-      setSelectedFile(null);
+      onFileSelect(null);
     }
   };
 
@@ -42,9 +45,9 @@ const AISummary = ({
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const droppedFile = e.dataTransfer.files[0];
       if (droppedFile.type === "application/pdf") {
-        setSelectedFile(droppedFile);
+        onFileSelect(droppedFile);
       } else {
-        setSelectedFile(null);
+        onFileSelect(null);
       }
     }
   };
@@ -53,6 +56,7 @@ const AISummary = ({
     e.preventDefault();
     if (selectedFile) {
       onGenerateSummary(selectedFile);
+      onFileSelect(null);
     }
   };
 
