@@ -2,13 +2,17 @@ import React, { useState } from "react";
 import AIResponseDisplay from "./AIResponseDisplay";
 import UpArrowIcon from "../assets/upArrow.svg";
 
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import {
+  changeSummarySelectedFile,
+  selectSummarySelectedFile,
+} from "../features/gemini/geminiSlice";
+
 interface AISummaryProps {
   geminiResponse: string | null;
   isLoading: boolean;
   error: string | null;
   onGenerateSummary: (file: File) => void;
-  selectedFile: File | null;
-  onFileSelect: (file: File | null) => void;
 }
 
 const AISummary = ({
@@ -16,16 +20,17 @@ const AISummary = ({
   isLoading,
   error,
   onGenerateSummary,
-  selectedFile,
-  onFileSelect,
 }: AISummaryProps) => {
   const [isDragging, setIsDragging] = useState(false);
 
+  const dispatch = useAppDispatch();
+  const selectedFile = useAppSelector(selectSummarySelectedFile);
+
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      onFileSelect(e.target.files[0]);
+      dispatch(changeSummarySelectedFile(e.target.files[0]));
     } else {
-      onFileSelect(null);
+      dispatch(changeSummarySelectedFile(null));
     }
   };
 
@@ -45,9 +50,9 @@ const AISummary = ({
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const droppedFile = e.dataTransfer.files[0];
       if (droppedFile.type === "application/pdf") {
-        onFileSelect(droppedFile);
+        dispatch(changeSummarySelectedFile(droppedFile));
       } else {
-        onFileSelect(null);
+        dispatch(changeSummarySelectedFile(null));
       }
     }
   };
@@ -56,7 +61,6 @@ const AISummary = ({
     e.preventDefault();
     if (selectedFile) {
       onGenerateSummary(selectedFile);
-      onFileSelect(null);
     }
   };
 
@@ -105,7 +109,9 @@ const AISummary = ({
               className="w-4 h-4 filter invert(100%)"
             />
           </button>
-          {isLoading && <p className="text-gray-400 text-sm">Summarizing...</p>}
+          {isLoading && selectedFile && (
+            <p className="text-gray-400 text-sm">Summarizing...</p>
+          )}
         </form>
 
         {error && <p className="text-red-500 text-sm">{error}</p>}

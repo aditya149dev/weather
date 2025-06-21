@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import AIChat from "../components/AIChat";
 import PopoverUI from "../components/ui/PopoverUI";
 import AISummary from "../components/AISummary";
@@ -6,34 +6,28 @@ import { useGemini } from "../hooks/useGemini";
 import { useWeatherQuery } from "../services/weatherApi";
 import { useAppSelector } from "../redux/hooks";
 import { selectLocationQuery } from "../features/location/locationSlice";
+import {
+  selectGeminiChatResponse,
+  selectGeminiSummaryResponse,
+  selectIsGeminiLoading,
+  selectGeminiError,
+} from "../features/gemini/geminiSlice";
 
 const AI = () => {
   const locationQuery = useAppSelector(selectLocationQuery);
   const { data } = useWeatherQuery(locationQuery || "fetch:ip");
 
-  //state of child AIChat and AISummary
-  const [chatInputText, setChatInputText] = useState<string>("");
-  const [summarySelectedFile, setSummarySelectedFile] = useState<File | null>(
-    null
-  );
-
   useEffect(() => {
     console.log("Weather Data in /ai:", data);
   }, [data]);
 
-  const {
-    geminiResponse: chatGeminiResponse,
-    isLoading: isChatLoading,
-    error: chatError,
-    generateContent: generateChatContent,
-  } = useGemini();
+  const chatGeminiResponse = useAppSelector(selectGeminiChatResponse);
+  const summaryGeminiResponse = useAppSelector(selectGeminiSummaryResponse);
+  const isLoading = useAppSelector(selectIsGeminiLoading);
+  const error = useAppSelector(selectGeminiError);
 
-  const {
-    geminiResponse: summaryGeminiResponse,
-    isLoading: isSummaryLoading,
-    error: summaryError,
-    generateSummaryFromFile,
-  } = useGemini();
+  const { generateContent: generateChatContent } = useGemini();
+  const { generateSummaryFromFile } = useGemini();
 
   const handleChatGenerate = (text: string) => {
     generateChatContent(text);
@@ -49,21 +43,17 @@ const AI = () => {
         <PopoverUI triggerText="AI Chat">
           <AIChat
             geminiResponse={chatGeminiResponse}
-            isLoading={isChatLoading}
-            error={chatError}
+            isLoading={isLoading}
+            error={error}
             onGenerateContent={handleChatGenerate}
-            inputText={chatInputText}
-            onInputChange={(text: string) => setChatInputText(text)}
           />
         </PopoverUI>
         <PopoverUI triggerText="AI Summary">
           <AISummary
             geminiResponse={summaryGeminiResponse}
-            isLoading={isSummaryLoading}
-            error={summaryError}
+            isLoading={isLoading}
+            error={error}
             onGenerateSummary={handleSummaryGenerate}
-            selectedFile={summarySelectedFile}
-            onFileSelect={(file: File | null) => setSummarySelectedFile(file)}
           />
         </PopoverUI>
       </div>

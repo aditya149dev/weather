@@ -2,13 +2,17 @@ import React, { useRef, useLayoutEffect, useState } from "react";
 import AIResponseDisplay from "./AIResponseDisplay";
 import UpArrowIcon from "../assets/upArrow.svg";
 
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import {
+  changeChatInputText,
+  selectChatInputText,
+} from "../features/gemini/geminiSlice";
+
 interface AIChatProps {
   geminiResponse: string | null;
   isLoading: boolean;
   error: string | null;
   onGenerateContent: (text: string) => void;
-  inputText: string;
-  onInputChange: (text: string) => void;
 }
 
 const AIChat = ({
@@ -16,11 +20,12 @@ const AIChat = ({
   isLoading,
   error,
   onGenerateContent,
-  inputText,
-  onInputChange,
 }: AIChatProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isFocused, setIsFocused] = useState<boolean>(false);
+
+  const dispatch = useAppDispatch();
+  const inputText = useAppSelector(selectChatInputText);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,7 +77,7 @@ const AIChat = ({
           <textarea
             ref={textareaRef}
             value={inputText}
-            onChange={(e) => onInputChange(e.target.value)}
+            onChange={(e) => dispatch(changeChatInputText(e.target.value))}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
@@ -93,7 +98,7 @@ const AIChat = ({
           <div className="flex items-center w-full justify-between">
             <p
               className={`text-gray-400 text-sm ${
-                !isLoading ? "invisible" : ""
+                !isLoading || !inputText.trim() ? "invisible" : ""
               }`}
             >
               Generating...

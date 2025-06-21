@@ -1,18 +1,27 @@
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { GoogleGenAI, type Part } from "@google/genai";
+import { useAppDispatch } from "../redux/hooks";
+import {
+  changeGeminiChatResponse,
+  changeGeminiSummaryResponse,
+  changeIsLoading,
+  changeError,
+} from "../features/gemini/geminiSlice";
+import type { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 export const useGemini = () => {
-  const [geminiResponse, setGeminiResponse] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
 
   const performGeneration = useCallback(
-    async (generationTask: () => Promise<Part[]>) => {
-      setIsLoading(true);
-      setError(null);
-      setGeminiResponse(null);
+    async (
+      generationTask: () => Promise<Part[]>,
+      dispatchAction: ActionCreatorWithPayload<string | null, string>
+    ) => {
+      dispatch(changeIsLoading(true));
+      dispatch(changeError(null));
+      dispatch(dispatchAction(null));
 
       try {
         if (!API_KEY) {
@@ -26,25 +35,25 @@ export const useGemini = () => {
           contents,
         });
         const textResponse = result.text || null;
-        setGeminiResponse(textResponse);
+        dispatch(dispatchAction(textResponse));
       } catch (err) {
         console.error("Error during generation:", err);
         if (err instanceof Error) {
-          setError(err.message);
+          dispatch(changeError(err.message));
         } else {
-          setError("An unknown error occurred.");
+          dispatch(changeError("An unknown error occurred."));
         }
       } finally {
-        setIsLoading(false);
+        dispatch(changeIsLoading(false));
       }
     },
-    []
+    [dispatch]
   );
 
   const generateContent = useCallback(
     (text: string) => {
       const task = async (): Promise<Part[]> => [{ text }];
-      return performGeneration(task);
+      return performGeneration(task, changeGeminiChatResponse);
     },
     [performGeneration]
   );
@@ -69,15 +78,12 @@ export const useGemini = () => {
           },
         ];
       };
-      return performGeneration(task);
+      return performGeneration(task, changeGeminiSummaryResponse);
     },
     [performGeneration]
   );
 
   return {
-    geminiResponse,
-    isLoading,
-    error,
     generateContent,
     generateSummaryFromFile,
   };
