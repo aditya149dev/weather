@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import AIChat from "../components/AIChat";
 import PopoverUI from "../components/ui/PopoverUI";
 import AISummary from "../components/AISummary";
@@ -8,11 +8,12 @@ import { useAppSelector } from "../redux/hooks";
 import { selectLocationQuery } from "../features/location/locationSlice";
 
 const AI = () => {
-  const [chatInputText, setChatInputText] = useState<string>("");
-
   const locationQuery = useAppSelector(selectLocationQuery);
   const { data } = useWeatherQuery(locationQuery || "fetch:ip");
-  console.log("Weather Data in /ai:", data);
+
+  useEffect(() => {
+    console.log("Weather Data in /ai:", data);
+  }, [data]);
 
   const {
     geminiResponse: chatGeminiResponse,
@@ -28,8 +29,8 @@ const AI = () => {
     generateSummaryFromFile,
   } = useGemini();
 
-  const handleChatGenerate = () => {
-    generateChatContent(chatInputText);
+  const handleChatGenerate = (text: string) => {
+    generateChatContent(text);
   };
 
   const handleSummaryGenerate = (file: File) => {
@@ -41,8 +42,6 @@ const AI = () => {
       <div className="flex gap-8">
         <PopoverUI triggerText="AI Chat">
           <AIChat
-            inputText={chatInputText}
-            setInputText={setChatInputText}
             geminiResponse={chatGeminiResponse}
             isLoading={isChatLoading}
             error={chatError}

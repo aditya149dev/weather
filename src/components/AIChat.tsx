@@ -1,10 +1,8 @@
-import React, { useRef, useLayoutEffect } from "react";
+import React, { useRef, useLayoutEffect, useState } from "react";
 import AIResponseDisplay from "./AIResponseDisplay";
 import UpArrowIcon from "../assets/upArrow.svg";
 
 interface AIChatProps {
-  inputText: string;
-  setInputText: (text: string) => void;
   geminiResponse: string | null;
   isLoading: boolean;
   error: string | null;
@@ -12,19 +10,20 @@ interface AIChatProps {
 }
 
 const AIChat = ({
-  inputText,
-  setInputText,
   geminiResponse,
   isLoading,
   error,
   onGenerateContent,
 }: AIChatProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [inputText, setInputText] = useState<string>("");
+  const [isFocused, setIsFocused] = useState<boolean>(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputText.trim()) {
       onGenerateContent(inputText);
+      setIsFocused(false);
     }
   };
 
@@ -39,7 +38,7 @@ const AIChat = ({
       const paddingTop = parseFloat(computedStyle.paddingTop);
       const paddingBottom = parseFloat(computedStyle.paddingBottom);
 
-      const maxLines = 6;
+      const maxLines = isFocused ? 6 : 2;
       const maxHeight = maxLines * lineHeight + paddingTop + paddingBottom;
 
       const scrollHeight = textarea.scrollHeight;
@@ -53,7 +52,7 @@ const AIChat = ({
         textarea.style.overflowY = "hidden";
       }
     }
-  }, [inputText]);
+  }, [inputText, isFocused]);
 
   return (
     <>
@@ -74,6 +73,8 @@ const AIChat = ({
                 );
               }
             }}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             rows={2}
             placeholder="Ask anything..."
             className="bg-transparent border-none focus:outline-none w-full text-white placeholder-gray-400 resize-none scrollbar-hide"
